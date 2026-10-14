@@ -65,5 +65,5 @@ do_deploy() {
 addtask deploy after do_prepare_recipe_sysroot before do_build
 EOF
 
-bitbake rv32-llvm-deps-sysroot
+bitbake rv32-llvm-deps-sysroot || exit 1
 cp "$work_dir/bitbake-builds/poky-wrynose/build/tmp/deploy/images/qemuriscv32/riscv32-yocto-wrynose-sysroot.tar.zst" "$work_dir/"

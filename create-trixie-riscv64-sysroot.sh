@@ -11,7 +11,7 @@ TGT=riscv64-debian-trixie-sysroot
   --mirror=https://deb.debian.org/debian \
   --cache-dir="$HOME/debcache" \
   --target-dir=$TGT \
-  --include=build-essential,symlinks,zlib1g-dev,libxml2-dev
+  --include=build-essential,symlinks,zlib1g-dev,libxml2-dev || exit 1
 
 "$TGT/_enter" symlinks -cr .
 ln -s usr/include "$TGT/include"

@@ -11,9 +11,9 @@ TGT=riscv64-trixie-for-qemu
   --mirror=https://deb.debian.org/debian \
   --cache-dir="$HOME/debcache" \
   --target-dir=$TGT \
-  --include=linux-image-riscv64,zstd,dbus,systemd-resolved,systemd-timesyncd,openssh-server,sudo,python3,python3-psutil,git,libxml2
+  --include=linux-image-riscv64,zstd,dbus,systemd-resolved,systemd-timesyncd,openssh-server,sudo,python3,python3-psutil,git,libxml2 || exit 1
 
-"$TGT/_enter" sh -e <<'EOF'
+"$TGT/_enter" sh -e <<'EOF' || exit 1
 mkdir -p \
   /etc/systemd/network \
   /etc/ssh/sshd_config.d \
@@ -68,7 +68,7 @@ echo user:user | chpasswd
 echo "Finished rootfs config"
 EOF
 
-fakeroot -i $TGT/.fakeroot.env sh <<EOF
+fakeroot -i $TGT/.fakeroot.env sh -e <<EOF || exit 1
 cp $TGT/boot/vmlinux-* kernel
 cp $TGT/boot/initrd.img-* initrd
 mkfs.ext4 -q -L rootfs -d $TGT rootfs.img 30G
