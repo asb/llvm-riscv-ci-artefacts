@@ -20,7 +20,7 @@ mkdir -p \
   /etc/systemd/system/ssh.service.d \
   /etc/systemd/system/sshd-vsock@.service.d
 
-cat - <<INNER_EOF > /etc/systemd/network/10-qemu.network
+cat - <<'INNER_EOF' > /etc/systemd/network/10-qemu.network
 [Match]
 Type=ether
 
@@ -28,21 +28,21 @@ Type=ether
 DHCP=yes
 INNER_EOF
 
-cat - <<INNER_EOF > /etc/ssh/sshd_config.d/20-qemu-login.conf
+cat - <<'INNER_EOF' > /etc/ssh/sshd_config.d/20-qemu-login.conf
 PermitRootLogin yes
 PasswordAuthentication yes
 INNER_EOF
 
 rm -f /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 
-cat - <<INNER_EOF > /etc/systemd/system/ssh.service.d/10-ephemeral-authorized-keys.conf
+cat - <<'INNER_EOF' > /etc/systemd/system/ssh.service.d/10-ephemeral-authorized-keys.conf
 [Service]
 ImportCredential=ssh.authorized_keys
 ExecStart=
 ExecStart=/usr/sbin/sshd -D $SSHD_OPTS -o "AuthorizedKeysFile .ssh/authorized_keys" -o "AuthorizedKeysCommand /usr/bin/cat ${CREDENTIALS_DIRECTORY}/ssh.authorized_keys" -o "AuthorizedKeysCommandUser root"
 INNER_EOF
 
-cat - <<INNER_EOF > /etc/systemd/system/sshd-vsock@.service.d/10-ephemeral-authorized-keys.conf
+cat - <<'INNER_EOF' > /etc/systemd/system/sshd-vsock@.service.d/10-ephemeral-authorized-keys.conf
 [Service]
 ImportCredential=ssh.authorized_keys
 ExecStart=
@@ -74,4 +74,4 @@ cp $TGT/boot/initrd.img-* initrd
 mkfs.ext4 -q -L rootfs -d $TGT rootfs.img 30G
 EOF
 
-tar --zstd -cf riscv64-debian-trixie-appliance.tar.zst rootfs.img kernel initrd
+tar --sparse --zstd -cf riscv64-debian-trixie-appliance.tar.zst rootfs.img kernel initrd
